@@ -7,6 +7,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.time.Duration;
+
 @SpringBootTest
 class SpringWebfluxTestApplicationTests {
 
@@ -26,5 +28,19 @@ class SpringWebfluxTestApplicationTests {
 	void testVarios() {
 		Flux<String> uno = pruebaService.buscarTodos();
 		StepVerifier.create(uno).expectNext("Pedro").expectNext("Maria").expectNext("Jesus").expectNext("Carmen").verifyComplete();
+	}
+
+	@Test
+	void testVariosLento() {
+		Flux<String> uno = pruebaService.buscarTodosLento();
+		StepVerifier.create(uno)
+				.expectNext("Pedro")
+				.thenAwait(Duration.ofSeconds(1))
+				.expectNext("Maria")
+				.thenAwait(Duration.ofSeconds(1))
+				.expectNext("Jesus")
+				.thenAwait(Duration.ofSeconds(1))
+				.expectNext("Carmen")
+				.thenAwait(Duration.ofSeconds(1)).verifyComplete();
 	}
 }
