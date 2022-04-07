@@ -43,4 +43,28 @@ class SpringWebfluxTestApplicationTests {
 				.expectNext("Carmen")
 				.thenAwait(Duration.ofSeconds(1)).verifyComplete();
 	}
+
+	@Test
+	void testTodosFiltro() {
+		Flux<String> source = pruebaService.buscarTodosFiltro();
+		StepVerifier
+				.create(source)
+				.expectNext("JOHN")
+				.expectNextMatches(name -> name.startsWith("MA"))
+				.expectNext("CLOE", "CATE")
+				.expectComplete()
+				.verify();
+	}
+
+	@Test
+	void testTodosFiltro2() {
+		Flux<String> source = pruebaService.buscarTodosFiltro();
+		StepVerifier
+				.create(source)
+				.expectNextCount(4)
+				.expectErrorMatches(throwable -> throwable instanceof IllegalArgumentException &&
+						throwable.getMessage().equals("Mensaje de Error")
+				).verify();
+	}
+
 }
